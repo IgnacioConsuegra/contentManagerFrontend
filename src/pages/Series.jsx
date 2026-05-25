@@ -63,7 +63,9 @@ export default function Series() {
 
   const fetchSeries = async () => {
     try {
-      const res = await fetch("http://localhost:5000/api/series");
+      const res = await fetch(
+        "https://contentmanagerbackend-1.onrender.com/api/series",
+      );
       const data = await res.json();
       setSeriesList(data);
     } catch (err) {
@@ -111,13 +113,16 @@ export default function Series() {
     fd.append("thumbnail", formData.thumbnail);
 
     try {
-      const res = await fetch("http://localhost:5000/api/series", {
-        method: "POST",
-        body: fd,
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+      const res = await fetch(
+        "https://contentmanagerbackend-1.onrender.com/api/series",
+        {
+          method: "POST",
+          body: fd,
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
         },
-      });
+      );
       const data = await res.json();
       if (res.ok) {
         toast.success("Series created successfully");
@@ -152,7 +157,7 @@ export default function Series() {
 
     try {
       const res = await fetch(
-        `http://localhost:5000/api/series/${selectedSeries.id}`,
+        `https://contentmanagerbackend-1.onrender.com/api/series/${selectedSeries.id}`,
         {
           method: "PUT",
           body: fd,
@@ -205,7 +210,7 @@ export default function Series() {
 
     try {
       const res = await fetch(
-        `http://localhost:5000/api/series/${selectedSeries.id}/episodes`,
+        `https://contentmanagerbackend-1.onrender.com/api/series/${selectedSeries.id}/episodes`,
         {
           method: "POST",
           body: fd,
@@ -237,7 +242,7 @@ export default function Series() {
   const handleDeleteEpisode = async epId => {
     try {
       const res = await fetch(
-        `http://localhost:5000/api/series/${selectedSeries.id}/episodes/${epId}`,
+        `https://contentmanagerbackend-1.onrender.com/api/series/${selectedSeries.id}/episodes/${epId}`,
         {
           method: "DELETE",
           headers: {
@@ -263,7 +268,7 @@ export default function Series() {
   const handleFullDelete = async () => {
     try {
       const res = await fetch(
-        `http://localhost:5000/api/series/${selectedSeries.id}`,
+        `https://contentmanagerbackend-1.onrender.com/api/series/${selectedSeries.id}`,
         {
           method: "DELETE",
           headers: {

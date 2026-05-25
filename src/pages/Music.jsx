@@ -34,7 +34,9 @@ export default function Music() {
 
   const fetchSongs = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/music");
+      const response = await fetch(
+        "https://contentmanagerbackend-1.onrender.com/api/music",
+      );
       const data = await response.json();
       setSongs(data);
     } catch (error) {
@@ -72,13 +74,16 @@ export default function Music() {
     formData.append("file", file);
 
     try {
-      const response = await fetch("http://localhost:5000/api/music", {
-        method: "POST",
-        body: formData,
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+      const response = await fetch(
+        "https://contentmanagerbackend-1.onrender.com/api/music",
+        {
+          method: "POST",
+          body: formData,
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
         },
-      });
+      );
 
       const data = await response.json();
 
@@ -113,17 +118,20 @@ export default function Music() {
 
   const handleEditSave = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/music", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+      const response = await fetch(
+        "https://contentmanagerbackend-1.onrender.com/api/music",
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          body: JSON.stringify({
+            oldUrl: editingUrl,
+            ...editForm,
+          }),
         },
-        body: JSON.stringify({
-          oldUrl: editingUrl,
-          ...editForm,
-        }),
-      });
+      );
 
       if (response.ok) {
         const updatedSong = await response.json();

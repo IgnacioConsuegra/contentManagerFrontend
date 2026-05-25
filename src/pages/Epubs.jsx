@@ -32,7 +32,9 @@ export default function Epubs() {
   }, []);
 
   const fetchEpubs = async () => {
-    const res = await fetch("http://localhost:5000/api/epubs");
+    const res = await fetch(
+      "https://contentmanagerbackend-1.onrender.com/api/epubs",
+    );
     const data = await res.json();
     setList(data);
   };
@@ -47,8 +49,8 @@ export default function Epubs() {
 
     const url =
       showModal.type === "edit"
-        ? `http://localhost:5000/api/epubs/${encodeURIComponent(showModal.data.url)}`
-        : "http://localhost:5000/api/epubs";
+        ? `https://contentmanagerbackend-1.onrender.com/api/epubs/${encodeURIComponent(showModal.data.url)}`
+        : "https://contentmanagerbackend-1.onrender.com/api/epubs";
     const method = showModal.type === "edit" ? "PUT" : "POST";
 
     const res = await fetch(url, {
@@ -78,7 +80,7 @@ export default function Epubs() {
 
   const handleFullDelete = async () => {
     await fetch(
-      `http://localhost:5000/api/epubs/${encodeURIComponent(showModal.data.url)}`,
+      `https://contentmanagerbackend-1.onrender.com/api/epubs/${encodeURIComponent(showModal.data.url)}`,
       {
         method: "DELETE",
         headers: {
