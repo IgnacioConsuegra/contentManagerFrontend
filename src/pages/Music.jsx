@@ -6,6 +6,7 @@ import {
   Edit2,
   Save,
   X,
+  Trash2,
 } from "lucide-react";
 import toast from "react-hot-toast";
 
@@ -159,6 +160,15 @@ export default function Music() {
       normalizeStr(song.category).includes(search)
     );
   });
+
+  const handleFirstStep = () => {
+    if (deleteInput === `Delete ${deleteModal.song.title}`) {
+      setDeleteModal({ ...deleteModal, step: 2 });
+      setDeleteInput("");
+    } else {
+      toast.error("Text mismatch");
+    }
+  };
   const handleDeleteConfirm = async () => {
     try {
       const response = await fetch(
@@ -427,7 +437,7 @@ export default function Music() {
                               }
                               className="p-1 text-red-600 hover:bg-red-100 rounded ml-2"
                             >
-                              <X className="w-4 h-4" />
+                              <Trash2 className="w-4 h-4" />
                             </button>
                           </td>
                         </>
@@ -463,11 +473,7 @@ export default function Music() {
                   onChange={e => setDeleteInput(e.target.value)}
                 />
                 <button
-                  onClick={() =>
-                    deleteInput === `Delete ${deleteModal.song.title}`
-                      ? setDeleteModal({ ...deleteModal, step: 2 })
-                      : toast.error("Text mismatch")
-                  }
+                  onClick={handleFirstStep}
                   className="w-full bg-red-600 text-white p-2 rounded"
                 >
                   Next
@@ -478,6 +484,7 @@ export default function Music() {
                 <p className="text-sm mb-2">Write "delete permanent"</p>
                 <input
                   className="w-full p-2 border rounded mb-4"
+                  value={deleteInput}
                   onChange={e => setDeleteInput(e.target.value)}
                 />
                 <button
