@@ -27,7 +27,12 @@ export default function Music() {
     category: "",
     url: "",
   });
-
+  const [deleteModal, setDeleteModal] = useState({
+    show: false,
+    song: null,
+    step: 0,
+  });
+  const [deleteInput, setDeleteInput] = useState("");
   useEffect(() => {
     fetchSongs();
   }, []);
@@ -154,7 +159,26 @@ export default function Music() {
       normalizeStr(song.category).includes(search)
     );
   });
+  const handleDeleteConfirm = async () => {
+    try {
+      const response = await fetch(
+        `https://contentmanagerbackend-1.onrender.com/api/music/${encodeURIComponent(deleteModal.song.url)}`,
+        {
+          method: "DELETE",
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        },
+      );
 
+      if (response.ok) {
+        setSongs(songs.filter(s => s.url !== deleteModal.song.url));
+        toast.success("Deleted permanently");
+        setDeleteModal({ show: false, song: null, step: 0 });
+        setDeleteInput("");
+      }
+    } catch (error) {
+      toast.error("Error deleting song");
+    }
+  };
   return (
     <div className="max-w-7xl mx-auto">
       <div className="flex items-center mb-8">
@@ -393,6 +417,18 @@ export default function Music() {
                             >
                               <Edit2 className="w-4 h-4" />
                             </button>
+                            <button
+                              onClick={() =>
+                                setDeleteModal({
+                                  show: true,
+                                  song: song,
+                                  step: 1,
+                                })
+                              }
+                              className="p-1 text-red-600 hover:bg-red-100 rounded ml-2"
+                            >
+                              <X className="w-4 h-4" />
+                            </button>
                           </td>
                         </>
                       )}
@@ -409,6 +445,56 @@ export default function Music() {
           )}
         </div>
       </div>
+      {deleteModal.show && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white p-6 rounded-xl max-w-sm w-full">
+            <h3 className="font-bold text-lg mb-4">
+              {deleteModal.step === 1
+                ? `Delete ${deleteModal.song.title}?`
+                : "Final Confirmation"}
+            </h3>
+            {deleteModal.step === 1 ? (
+              <>
+                <p className="text-sm mb-2">
+                  Type "Delete {deleteModal.song.title}"
+                </p>
+                <input
+                  className="w-full p-2 border rounded mb-4"
+                  onChange={e => setDeleteInput(e.target.value)}
+                />
+                <button
+                  onClick={() =>
+                    deleteInput === `Delete ${deleteModal.song.title}`
+                      ? setDeleteModal({ ...deleteModal, step: 2 })
+                      : toast.error("Text mismatch")
+                  }
+                  className="w-full bg-red-600 text-white p-2 rounded"
+                >
+                  Next
+                </button>
+              </>
+            ) : (
+              <>
+                <p className="text-sm mb-2">Write "delete permanent"</p>
+                <input
+                  className="w-full p-2 border rounded mb-4"
+                  onChange={e => setDeleteInput(e.target.value)}
+                />
+                <button
+                  onClick={() =>
+                    deleteInput === "delete permanent"
+                      ? handleDeleteConfirm()
+                      : toast.error("Text mismatch")
+                  }
+                  className="w-full bg-red-700 text-white p-2 rounded font-bold"
+                >
+                  Delete Permanent
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
